@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const quests = require("../../quests.js");
+const quests = require("../../routes/api/missions");
 
 // Display all quests
-router.get("/", (req, res) => res.json(quests));
+router.get("/:name", (req, res) => res.json(quests));
 
 //Single quest
-router.get("/:id", (req, res) => {
+router.get("/:name/:id", (req, res) => {
   id = parseInt(req.params.id);
   const found = quests.some(quest => quest.id === id);
 

@@ -11,7 +11,10 @@ router.get("/:id", (req, res) => {
   const found = missions.some(mission => mission.id === id);
 
   if (found) {
+    
     res.send(missions.filter(mission => mission.id === id));
+
+
   } else {
     res.status(400).json({ msg: `Mission ${id} not found` });
   }

@@ -2,7 +2,12 @@ const missions = [
   {
     id: 1,
     name: "Wedding Planning",
-    status: "active"
+    status: "active",
+    quests: [
+      {
+        name: "Call Caterer"
+      }
+    ]
   },
   {
     id: 2,

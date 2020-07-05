@@ -14,7 +14,10 @@ app.use(express.urlencoded({ extended: false }));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+// Mission Routes
 app.use("/api/missions", require("./routes/api/missions"));
+// Quests
+app.use("/quests", require("./routes/api/quests"));
 
 //HOMEPAGE ROUTE
 app.get("/", (req, res) =>
@@ -22,14 +25,6 @@ app.get("/", (req, res) =>
   res.render("missions", {
     title: "Mission App",
     missions: missions
-  })
-);
-//QUEST ROUTE
-app.get("/", (req, res) =>
-  // eslint-disable-next-line implicit-arrow-linebreak
-  res.render("quests", {
-    title: "Mission Quests",
-    quests: quests
   })
 );
 
