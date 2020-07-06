@@ -3,6 +3,9 @@ module.exports = new Sequelize("missions", "root", "", {
   host: "localhost",
   dialect: "mysql",
   operatorsAliases: false,
+  define: {
+    timestamps: false
+  },
 
   pool: {
     max: 5,
