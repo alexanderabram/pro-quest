@@ -108,7 +108,7 @@ module.exports = function(app) {
         owners,
         description
       })
-        .then(mission => res.redirect("/missions"))
+        .then(res.redirect("/missions"))
         .catch(err => console.log(err));
     }
   });
