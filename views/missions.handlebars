@@ -1,24 +1,10 @@
 <h1> {{title}} </h1>
-
-<h4>Missions</h4>
 <ul>
-    {{#each missions}}
-        <a href="/api/missions/{{this.id}}"><li>{{this.name}}: {{this.status}}</li></a>
-    {{/each}}
+{{#each missions}}
+    <li>Name: {{dataValues.name}}</li>
+    <li>Desc: {{dataValues.description}}</li>
+    <a href="/missions/{{dataValues.id}}">Embark</a>
+<br>
+<hr>
+{{/each}}
 </ul>
-<a href="/api/missions">Visit API</a>
-
-<form action="/api/missions" method="POST">
-    <div class="form-group">
-        <label for="name">Name:</label>  
-        <input type="text" name="name" class="form-control">
-    </div>
-     <div class="form-group">
-        <label for="name">Set Status:</label>  
-        <select type="" name="status" class="form-control">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-    </div>
-    <input type="submit" value="Add Mission"></button>
-
-</form>
