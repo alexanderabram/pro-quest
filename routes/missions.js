@@ -1,6 +1,6 @@
 /* eslint-disable implicit-arrow-linebreak */
 const Mission = require("../models/app/Mission");
-
+const Quest = require("../models/app/Quest");
 module.exports = function(app) {
   // Display all Missions
   console.log("DISPLAY ALL");
@@ -39,15 +39,11 @@ module.exports = function(app) {
       }
     })
       .then(results => {
-        console.log(results);
-
         if (!results[0]) {
           res.redirect("/missions/add");
         }
         console.log("Passing over single ID");
-
         const mission = results[0].dataValues;
-
         const {
           name,
           due,
@@ -57,15 +53,23 @@ module.exports = function(app) {
           description,
           id
         } = mission;
-
-        res.render("view", {
-          name,
-          status,
-          due,
-          createdAt,
-          owners,
-          description,
-          id
+        // ADD QUESTS TO DISPLAY BY ID
+        Quest.findAll({
+          where: {
+            misId: id
+          }
+        }).then(results => {
+          const quests = results;
+          res.render("view", {
+            name,
+            status,
+            due,
+            createdAt,
+            owners,
+            description,
+            id,
+            quests
+          });
         });
       })
       .catch(err => console.log(err));
@@ -74,8 +78,9 @@ module.exports = function(app) {
   // New Mission
   app.post("/missions/add", (req, res) => {
     console.log("add");
+    const { name, due, status, owners, description } = req.body;
+    const quests = req.body.quests.split(",");
 
-    const { name, due, status, quests, owners, description } = req.body;
     const errors = [];
     //Validation
     if (!name) {
@@ -94,7 +99,6 @@ module.exports = function(app) {
         name,
         due,
         status,
-        quests,
         owners,
         description
       });
@@ -104,12 +108,23 @@ module.exports = function(app) {
         name,
         due,
         status,
-        quests,
         owners,
         description
       })
-        .then(res.redirect("/missions"))
+        .then(Mission => {
+          const id = Mission.dataValues.id;
+          console.log(typeof id);
+
+          quests.forEach(quest => {
+            Quest.create({
+              name: quest,
+              misId: id
+            });
+          });
+          res.redirect("/missions/");
+        })
         .catch(err => console.log(err));
+      // Insert Into Table
     }
   });
 

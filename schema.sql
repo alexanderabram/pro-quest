@@ -17,10 +17,8 @@ CREATE TABLE missions (
 CREATE TABLE quests (
     id INT AUTO_INCREMENT NOT NULL,
     name VARCHAR(50) NOT NULL,
-    description VARCHAR(300) NOT NULL,
-    owners VARCHAR(50) NOT NULL,
-    status BOOLEAN NOT NULL,
+    status BOOLEAN DEFAULT FALSE,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    due date NULL,
+    misID INT,
     PRIMARY KEY (id)
 );
