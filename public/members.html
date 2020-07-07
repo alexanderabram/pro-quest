@@ -5,8 +5,27 @@
   <title>Passport Authentication</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale.v3.min.js"></script>
+  
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
   <link href="stylesheets/style.css" rel="stylesheet">
+  <style>
+  .chart {
+    width: 650px;
+    height: 500px;
+    border: 1px solid black;
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .bar {
+    fill: green;
+    border-radius: 15px 15px 0px 0px;
+  }
+  .bar:hover {
+      fill: steelblue;
+  }
+  </style>
 </head>
 
 <body>
@@ -26,9 +45,49 @@
       </div>
     </div>
   </div>
+  <svg></svg>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/members.js"></script>
+
+  <script>
+
+
+    const  DUMMY_DATTA = [
+      { id: 1, tasks_done: 11, name: "jack" },
+      { id: 2, tasks_done: 5, name: "mike" },
+      { id: 3, tasks_done: 12, name: "luke" },
+      { id: 4, tasks_done: 13, name: "tom" },
+      { id: 5, tasks_done: 5, name: "lex" },
+      { id: 6, tasks_done: 6, name: "alex" },
+      { id: 7, tasks_done: 17, name: "adam" },
+    ];
+
+    // d3.json("http://localhost:4500/api/quests.json", function(error, data) {
+
+    const xScale = d3.scaleBand().domain(DUMMY_DATTA.map((dataPoint) => dataPoint.name)).rangeRound([0, 650]).padding(0.1);
+    const yScale = d3.scaleLinear().domain([0, 20]).range([600, 0]);
+
+    const chart = d3.select('svg')
+    .classed('chart', true);
+
+    const bars = chart
+      .selectAll('.bar')
+      .data(DUMMY_DATTA)
+      .enter()
+      .append('rect', 'text')
+      .text("Tasks-Done")
+      
+      .classed('bar', true)
+      .attr('width', xScale.bandwidth())
+      .attr('height', data => 600 - yScale(data.tasks_done))
+      .attr('x', data => xScale(data.name))
+      .attr('y', data => yScale(data.tasks_done));
+
+
+    // });
+    
+    </script>
 
 </body>
 
