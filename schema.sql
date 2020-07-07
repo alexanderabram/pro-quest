@@ -10,7 +10,7 @@ CREATE TABLE missions (
     owners VARCHAR(50) NOT NULL,
     status BOOLEAN NOT NULL,
     createdAt DATETIME NOT NULL,
-    due VARCHAR(15) NOT NULL,
+    due VARCHAR(25) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE quests (
     description VARCHAR(300) NOT NULL,
     owners VARCHAR(50) NOT NULL,
     status BOOLEAN NOT NULL,
-    createdAt DATETIME NOT NULL,
-    due VARCHAR(15) NOT NULL,
+    createdAt DATE NOT NULL,
+    due VARCHAR(25) NOT NULL,
     PRIMARY KEY (id)
 );
