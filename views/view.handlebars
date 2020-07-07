@@ -12,6 +12,10 @@
         <br>
         <h3>description: {{description}}</h3>
         <br>
+        <h3> Quests: </h3>
+        {{#each quests}}
+        <li>{{{dataValues.name}}}</li>
+        {{/each}}
         <h3>Due: {{due}}</h3>
         <br>
         <h3> Status: {{status}}</h3>
