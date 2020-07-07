@@ -1,37 +1,43 @@
+// Requiring necessary npm packages
 const express = require("express");
+const session = require("express-session");
 const exphbs = require("express-handlebars");
+
+// Requiring passport as we've configured it
+const passport = require("./config/passport");
+
+// Setting up port and requiring models for syncing
+const PORT = process.env.PORT || 8080;
+const db = require("./models");
+
+// Creating express app and configuring middleware needed for authentication
 const app = express();
-const logger = require("./config/middleware/logger");
-
-const missions = require("./Missions");
-//Logger COMMENT OUT LINE BELOW TO DISABLE
-app.use(logger);
-// Body Parser
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.static("public"));
+// We need to use sessions to keep track of our user's login status
+app.use(
+  session({ secret: "keyboard cat", resave: true, saveUninitialized: true })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
-//HandleBars
+// View Engine
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-app.use("/api/missions", require("./routes/api/missions"));
+// Requiring our routes
+require("./routes/html-routes.js")(app);
+require("./routes/api-routes.js")(app);
+require("./routes/missions.js")(app);
 
-//HOMEPAGE ROUTE
-app.get("/", (req, res) =>
-  // eslint-disable-next-line implicit-arrow-linebreak
-  res.render("missions", {
-    title: "Mission App",
-    missions: missions
-  })
-);
-//QUEST ROUTE
-app.get("/", (req, res) =>
-  // eslint-disable-next-line implicit-arrow-linebreak
-  res.render("quests", {
-    title: "Mission Quests",
-    quests: quests
-  })
-);
-
-const PORT = process.env.PORT || 4500;
-app.listen(PORT, () => console.log(`Server Started on Port ${PORT}`));
+// Syncing our database and logging a message to the user upon success
+db.sequelize.sync().then(() => {
+  app.listen(PORT, () => {
+    console.log(
+      "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
+      PORT,
+      PORT
+    );
+  });
+});
