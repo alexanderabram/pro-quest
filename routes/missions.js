@@ -1,12 +1,11 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable implicit-arrow-linebreak */
-const Mission = require("../models/app/Mission");
-const Quest = require("../models/app/Quest");
-const People = require("../models/app/People");
-module.exports = function(app) {
+const db = require("../models");
+
+module.exports = function (app) {
   // Display all Missions
   app.get("/missions", (req, res) =>
-    Mission.findAll()
+    db.Mission.findAll()
       .then(missions => {
         res.render("home", {
           missions
@@ -17,7 +16,7 @@ module.exports = function(app) {
 
   // Display All Quests
   app.get("/quests", (req, res) =>
-    Quest.findAll()
+    db.Quest.findAll()
       .then(quests => {
         return res.render("home", {
           quests
@@ -27,7 +26,7 @@ module.exports = function(app) {
   );
 
   app.get("/missions/all", (req, res) =>
-    Mission.findAll()
+    db.Mission.findAll()
       .then(missions => {
         res.render("missions", {
           missions
@@ -45,16 +44,14 @@ module.exports = function(app) {
 
   //Single Mission
   app.get("/missions/:id", (req, res) => {
-    Mission.findAll({
+    db.Mission.findOne({
       where: {
         id: req.params.id
-      }
+      },
+      include: [db.Quest]
     })
-      .then(results => {
-        if (!results[0]) {
-          return res.redirect("/missions/add");
-        }
-        const mission = results[0].dataValues;
+      .then(result => {
+        const mission = result;
         const {
           name,
           due,
@@ -65,23 +62,15 @@ module.exports = function(app) {
           id
         } = mission;
         // ADD QUESTS TO DISPLAY BY ID
-        Quest.findAll({
-          where: {
-            misId: id,
-            status: false
-          }
-        }).then(results => {
-          const quests = results;
-          res.render("view", {
-            name,
-            status,
-            due,
-            createdAt,
-            owners,
-            description,
-            id,
-            quests
-          });
+        res.render("view", {
+          name,
+          status,
+          due,
+          createdAt,
+          owners,
+          description,
+          id,
+          quests: mission.Quests,
         });
       })
       .catch(err => console.log(err));
@@ -116,21 +105,21 @@ module.exports = function(app) {
       });
     } else {
       // Insert Into Table
-      Mission.create({
+      db.Mission.create({
         name,
         due,
         status,
         owners,
         description
       })
-        .then(Mission => {
-          const id = Mission.dataValues.id;
+        .then(mission => {
+          const id = mission.dataValues.id;
 
           quests.forEach(quest => {
             // Insert Into Table
-            Quest.create({
+            db.Quest.create({
               name: quest,
-              misId: id
+              MissionId: id
             });
           });
           res.redirect("/missions/" + id);
@@ -141,25 +130,25 @@ module.exports = function(app) {
 
   // COMPLETE QUEST
   app.get("/quest/update/:id", async (req, res) => {
-    Quest.findAll({
+    db.Quest.findAll({
       where: {
         id: req.params.id
       }
-    }).then(results => {   
-      const misId = results[0].dataValues.misId;
-      Quest.destroy({
+    }).then(results => {
+      const MissionId = results[0].dataValues.MissionId;
+      db.Quest.destroy({
         where: {
           id: req.params.id
         }
       }),
-      Mission.findAll({
+      db.Mission.findAll({
         where: {
-          id: misId
+          id: MissionId
         }
       }).then(results => {
         const username = results[0].dataValues.owners;
         const id = results[0].dataValues.id;
-        People.findAll({
+        db.People.findAll({
           where: {
             username: username
           }
@@ -167,7 +156,7 @@ module.exports = function(app) {
           score = user[0].dataValues.score;
           score = score + 1;
           console.log(username + "'s " + "score is: " + score);
-          People.update(
+          db.People.update(
             { score: score },
             {
               where: {
@@ -182,7 +171,7 @@ module.exports = function(app) {
 
   //EDIT
   app.get("/missions/edit/:id", (req, res) => {
-    Mission.findAll({
+    db.Mission.findAll({
       where: {
         id: req.params.id
       }
