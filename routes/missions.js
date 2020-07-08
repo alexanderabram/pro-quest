@@ -2,7 +2,7 @@
 /* eslint-disable implicit-arrow-linebreak */
 const Mission = require("../models/app/Mission");
 const Quest = require("../models/app/Quest");
-const Users = require("../models/app/Users");
+const People = require("../models/app/People");
 module.exports = function(app) {
   // Display all Missions
   app.get("/missions", (req, res) =>
@@ -54,7 +54,6 @@ module.exports = function(app) {
         if (!results[0]) {
           return res.redirect("/missions/add");
         }
-        console.log("Passing over single ID");
         const mission = results[0].dataValues;
         const {
           name,
@@ -146,7 +145,7 @@ module.exports = function(app) {
       where: {
         id: req.params.id
       }
-    }).then(results => {
+    }).then(results => {   
       const misId = results[0].dataValues.misId;
       Quest.destroy({
         where: {
@@ -160,7 +159,7 @@ module.exports = function(app) {
       }).then(results => {
         const username = results[0].dataValues.owners;
         const id = results[0].dataValues.id;
-        Users.findAll({
+        People.findAll({
           where: {
             username: username
           }
@@ -168,7 +167,7 @@ module.exports = function(app) {
           score = user[0].dataValues.score;
           score = score + 1;
           console.log(username + "'s " + "score is: " + score);
-          Users.update(
+          People.update(
             { score: score },
             {
               where: {
