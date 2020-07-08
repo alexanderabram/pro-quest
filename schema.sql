@@ -29,3 +29,4 @@ CREATE TABLE people (
     score INT DEFAULT(0),
     PRIMARY KEY (id)
 );
+DROP TABLE if EXISTS users;
