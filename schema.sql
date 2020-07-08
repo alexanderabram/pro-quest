@@ -22,3 +22,10 @@ CREATE TABLE quests (
     misID INT,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    score INT DEFAULT(0),
+    PRIMARY KEY (id)
+)

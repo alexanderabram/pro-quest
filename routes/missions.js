@@ -1,14 +1,26 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable implicit-arrow-linebreak */
 const Mission = require("../models/app/Mission");
 const Quest = require("../models/app/Quest");
+const Users = require("../models/app/Users");
 module.exports = function(app) {
   // Display all Missions
-  console.log("DISPLAY ALL");
   app.get("/missions", (req, res) =>
     Mission.findAll()
       .then(missions => {
         res.render("home", {
           missions
+        });
+      })
+      .catch(err => console.log(err))
+  );
+
+  // Display All Quests
+  app.get("/quests", (req, res) =>
+    Quest.findAll()
+      .then(quests => {
+        return res.render("home", {
+          quests
         });
       })
       .catch(err => console.log(err))
@@ -40,7 +52,7 @@ module.exports = function(app) {
     })
       .then(results => {
         if (!results[0]) {
-          res.redirect("/missions/add");
+          return res.redirect("/missions/add");
         }
         console.log("Passing over single ID");
         const mission = results[0].dataValues;
@@ -56,7 +68,8 @@ module.exports = function(app) {
         // ADD QUESTS TO DISPLAY BY ID
         Quest.findAll({
           where: {
-            misId: id
+            misId: id,
+            status: false
           }
         }).then(results => {
           const quests = results;
@@ -94,7 +107,7 @@ module.exports = function(app) {
     }
 
     if (errors.length > 0) {
-      res.render("add", {
+      res.render("add_mission", {
         errors,
         name,
         due,
@@ -113,19 +126,59 @@ module.exports = function(app) {
       })
         .then(Mission => {
           const id = Mission.dataValues.id;
-          console.log(typeof id);
 
           quests.forEach(quest => {
+            // Insert Into Table
             Quest.create({
               name: quest,
               misId: id
             });
           });
-          res.redirect("/missions/");
+          res.redirect("/missions/" + id);
         })
         .catch(err => console.log(err));
-      // Insert Into Table
     }
+  });
+
+  // COMPLETE QUEST
+  app.get("/quest/update/:id", async (req, res) => {
+    Quest.findAll({
+      where: {
+        id: req.params.id
+      }
+    }).then(results => {
+      const misId = results[0].dataValues.misId;
+      Quest.destroy({
+        where: {
+          id: req.params.id
+        }
+      }),
+      Mission.findAll({
+        where: {
+          id: misId
+        }
+      }).then(results => {
+        const username = results[0].dataValues.owners;
+        const id = results[0].dataValues.id;
+        Users.findAll({
+          where: {
+            username: username
+          }
+        }).then(user => {
+          score = user[0].dataValues.score;
+          score = score + 1;
+          console.log(username + "'s " + "score is: " + score);
+          Users.update(
+            { score: score },
+            {
+              where: {
+                username: username
+              }
+            }
+          ).then(res.redirect("/missions/" + id));
+        });
+      });
+    });
   });
 
   //EDIT
