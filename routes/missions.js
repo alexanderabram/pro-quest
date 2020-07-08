@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable implicit-arrow-linebreak */
 const Mission = require("../models/app/Mission");
 const Quest = require("../models/app/Quest");
