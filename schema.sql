@@ -23,9 +23,9 @@ CREATE TABLE quests (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE users (
+CREATE TABLE people (
     id INT AUTO_INCREMENT NOT NULL,
     username VARCHAR(50) NOT NULL,
     score INT DEFAULT(0),
     PRIMARY KEY (id)
-)
+);

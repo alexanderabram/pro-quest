@@ -12,9 +12,9 @@ VALUES ('2 Quest', 1);
 INSERT INTO quests (name, misId)
 VALUES ('3 Quest', 2);
 
-INSERT INTO users (username)
+INSERT INTO people (username)
 VALUES ('Lex');
-INSERT INTO users (username)
+INSERT INTO people (username)
 VALUES ('Alex');
-INSERT INTO users (username)
+INSERT INTO people (username)
 VALUES ('Grigore');
