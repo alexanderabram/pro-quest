@@ -152,31 +152,31 @@ module.exports = function(app) {
           id: req.params.id
         }
       }),
-        Mission.findAll({
+      Mission.findAll({
+        where: {
+          id: misId
+        }
+      }).then(results => {
+        const username = results[0].dataValues.owners;
+        const id = results[0].dataValues.id;
+        Users.findAll({
           where: {
-            id: misId
+            username: username
           }
-        }).then(results => {
-          const username = results[0].dataValues.owners;
-          const id = results[0].dataValues.id;
-          Users.findAll({
-            where: {
-              username: username
-            }
-          }).then(user => {
-            score = user[0].dataValues.score;
-            score = score + 1;
-            console.log(username + "'s " + "score is: " + score);
-            Users.update(
-              { score: score },
-              {
-                where: {
-                  username: username
-                }
+        }).then(user => {
+          score = user[0].dataValues.score;
+          score = score + 1;
+          console.log(username + "'s " + "score is: " + score);
+          Users.update(
+            { score: score },
+            {
+              where: {
+                username: username
               }
-            ).then(res.redirect("/missions/" + id));      
+            }
+          ).then(res.redirect("/missions/" + id));
         });
-        });
+      });
     });
   });
 
