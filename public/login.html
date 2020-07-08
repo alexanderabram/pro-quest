@@ -1,45 +1,47 @@
-<!DOCTYPE html>
+ <!-- <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>Passport Authentication</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
-  <link href="stylesheets/style.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login and Registration Form</title>
+<link rel="stylesheet" href="../public/stylesheets/style.css">
+<link href="../public/signup.html">
 </head>
 
 <body>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
+  <div class="hero">
+      <div class="form-box">
+      <div class="button-box">
+      <div id="btn"></div>
+      <button type="button" class="toggle-btn" onclick="login()">Login</button>
+       <button type="button" class="toggle-btn" onclick="signup()">Sign Up</button>
       </div>
-    </div>
-  </nav>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <h2>Login Form</h2>
-        <form class="login">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="email-input" placeholder="Email">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="password-input" placeholder="Password">
-          </div>
-          <button type="submit" class="btn btn-default">Login</button>
-        </form>
-        <br />
-        <p>Or sign up <a href="/">here</a></p>
+      <div class="social-icons">
+          <img src=" https://i.imgur.com/hPMvYI3.png" alt="">
+          <img src=" https://i.imgur.com/uDrCiij.png" alt="">
+          <img src=" https://i.imgur.com/XArGSwe.png" alt="">
       </div>
-    </div>
+      <form id="login" class="input-group">
+          <input type="text" class="input-field" id="email-input" placeholder="Email" required>
+          <input type="password" class="input-field" id="password-input" placeholder="Enter password" required>
+          <input type="checkbox" name="checkbox" class="check-box">
+          <label for="checkbox">Remember password</label>
+          <button type="submit" class="submit-btn">login</button>
+      </form>
+      <form id="signup" class="input-group">
+        <input type="text" class="input-field" id="email-input" placeholder="Email" required>
+        <input type="email" class="input-field" placeholder="Email ID" >
+        <input type="password" class="input-field" id="password-input" placeholder="Enter password" required>
+        <input type="checkbox" name="checkbox" class="check-box">
+        <label for="checkbox">I agree with Terms and Conditions</label>
+        <button type="submit" class="submit-btn">register</button>
+    </form>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="js/login.js"></script>
-
+  <script src="../public/js/app.js"></script>
+  <script src="./js/login.js"></script>
+  <script src="./js/signup.js"></script>
+  
 </body>
-
-</html>
+</html>  -->

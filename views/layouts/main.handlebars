@@ -6,15 +6,42 @@
     <title>PRO QUEST</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
-<body>
-    <nav>
-        <a href="/missions">HOME</a>
-        <a href="/missions/add"> Add Mission </a>
-        <a href="/missions/all">View all Missions</a>
-    </nav>
+<style>
+    .boddy {
+        width: 100%;
+    }
+.footer {
+    text-align: center;
+    bottom: -50px;
+    color: rgb(92, 62, 22);
+}
+.nav-item nav-link{
+    color: rgb(92, 62, 22);
+}
+</style>
+<body class="boddy">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Pro-Quest</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="/missions">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="/missions/add">Add Mission</a>
+      <a class="nav-item nav-link" href="/missions/all">View All Missions</a>
+      <a class="nav-item nav-link" href="/signup.html">Log Out</a>
+    </div>
+  </div>
+</nav>
+    
     {{{body}}}
 
-<footer> Footer </footer>
+
+<footer class="footer"> &copy;Pro-Quest2020 </footer>
+
+
+
 
 </body>
 </html>
