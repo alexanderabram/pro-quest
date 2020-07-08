@@ -15,8 +15,13 @@
         <input type="text" name="description" class="form-control">
     </div>
     <div class="form-group">
-        <label for="owners">Owners:</label>
-        <input type="text" name="owners" class="form-control">
+        <label for="owners">Owner:</label>
+       
+      <select id="user" name="owners">
+    <option value="Lex">Lex</option>
+    <option value="Alex">Alex</option>
+    <option value="Grigore">Grigore</option>
+  </select>    
     </div>
     <div class="form-group">
         <label for="due">Due:</label>
@@ -25,6 +30,10 @@
     <div class="form-group">
         <label for="status">Set Status:</label>
         <input type="checkbox" name="status" value="1" checked>
+    </div>
+    <div class="form-group">
+        <label for="quests">Quests:</label>
+        <input type="text" name="quests" class="form-control" placeholder="Enter Quests Separated by a comma. ex; ['dishes', 'dry clean']">
     </div>
     <input type="submit" value="AddMission"></button>
 

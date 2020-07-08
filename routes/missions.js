@@ -1,14 +1,26 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable implicit-arrow-linebreak */
 const Mission = require("../models/app/Mission");
-
+const Quest = require("../models/app/Quest");
+const Users = require("../models/app/Users");
 module.exports = function(app) {
   // Display all Missions
-  console.log("DISPLAY ALL");
   app.get("/missions", (req, res) =>
     Mission.findAll()
       .then(missions => {
         res.render("home", {
           missions
+        });
+      })
+      .catch(err => console.log(err))
+  );
+
+  // Display All Quests
+  app.get("/quests", (req, res) =>
+    Quest.findAll()
+      .then(quests => {
+        return res.render("home", {
+          quests
         });
       })
       .catch(err => console.log(err))
@@ -39,15 +51,11 @@ module.exports = function(app) {
       }
     })
       .then(results => {
-        console.log(results);
-
         if (!results[0]) {
-          res.redirect("/missions/add");
+          return res.redirect("/missions/add");
         }
         console.log("Passing over single ID");
-
         const mission = results[0].dataValues;
-
         const {
           name,
           due,
@@ -57,15 +65,24 @@ module.exports = function(app) {
           description,
           id
         } = mission;
-
-        res.render("view", {
-          name,
-          status,
-          due,
-          createdAt,
-          owners,
-          description,
-          id
+        // ADD QUESTS TO DISPLAY BY ID
+        Quest.findAll({
+          where: {
+            misId: id,
+            status: false
+          }
+        }).then(results => {
+          const quests = results;
+          res.render("view", {
+            name,
+            status,
+            due,
+            createdAt,
+            owners,
+            description,
+            id,
+            quests
+          });
         });
       })
       .catch(err => console.log(err));
@@ -74,8 +91,9 @@ module.exports = function(app) {
   // New Mission
   app.post("/missions/add", (req, res) => {
     console.log("add");
+    const { name, due, status, owners, description } = req.body;
+    const quests = req.body.quests.split(",");
 
-    const { name, due, status, quests, owners, description } = req.body;
     const errors = [];
     //Validation
     if (!name) {
@@ -89,12 +107,11 @@ module.exports = function(app) {
     }
 
     if (errors.length > 0) {
-      res.render("add", {
+      res.render("add_mission", {
         errors,
         name,
         due,
         status,
-        quests,
         owners,
         description
       });
@@ -104,13 +121,64 @@ module.exports = function(app) {
         name,
         due,
         status,
-        quests,
         owners,
         description
       })
-        .then(res.redirect("/missions"))
+        .then(Mission => {
+          const id = Mission.dataValues.id;
+
+          quests.forEach(quest => {
+            // Insert Into Table
+            Quest.create({
+              name: quest,
+              misId: id
+            });
+          });
+          res.redirect("/missions/" + id);
+        })
         .catch(err => console.log(err));
     }
+  });
+
+  // COMPLETE QUEST
+  app.get("/quest/update/:id", async (req, res) => {
+    Quest.findAll({
+      where: {
+        id: req.params.id
+      }
+    }).then(results => {
+      const misId = results[0].dataValues.misId;
+      Quest.destroy({
+        where: {
+          id: req.params.id
+        }
+      }),
+      Mission.findAll({
+        where: {
+          id: misId
+        }
+      }).then(results => {
+        const username = results[0].dataValues.owners;
+        const id = results[0].dataValues.id;
+        Users.findAll({
+          where: {
+            username: username
+          }
+        }).then(user => {
+          score = user[0].dataValues.score;
+          score = score + 1;
+          console.log(username + "'s " + "score is: " + score);
+          Users.update(
+            { score: score },
+            {
+              where: {
+                username: username
+              }
+            }
+          ).then(res.redirect("/missions/" + id));
+        });
+      });
+    });
   });
 
   //EDIT
