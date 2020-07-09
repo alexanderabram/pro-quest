@@ -6,7 +6,9 @@ module.exports = function (app) {
   // Display all Missions
   app.get("/missions", (req, res) =>
     db.Mission.findAll()
-      .then(missions => {
+      .then(results => {
+        const missions = JSON.parse(JSON.stringify(results));
+
         res.render("home", {
           missions
         });
@@ -17,7 +19,8 @@ module.exports = function (app) {
   // Display All Quests
   app.get("/quests", (req, res) =>
     db.Quest.findAll()
-      .then(quests => {
+      .then(results => {
+        const quests = JSON.parse(JSON.stringify(results));
         return res.render("home", {
           quests
         });
@@ -27,7 +30,8 @@ module.exports = function (app) {
 
   app.get("/missions/all", (req, res) =>
     db.Mission.findAll()
-      .then(missions => {
+      .then(results => {
+        const missions = JSON.parse(JSON.stringify(results));
         res.render("missions", {
           missions
         });
@@ -49,36 +53,37 @@ module.exports = function (app) {
         id: req.params.id
       },
       include: [db.Quest]
+    }).then(result => {
+      console.log("Result: ", result);
+      const mission = JSON.parse(JSON.stringify(result));
+
+      console.log("Mission: ", mission);
+      const {
+        name,
+        due,
+        status,
+        createdAt,
+        owners,
+        description,
+        id
+      } = mission;
+      // ADD QUESTS TO DISPLAY BY ID
+      res.render("view", {
+        name,
+        status,
+        due,
+        createdAt,
+        owners,
+        description,
+        id,
+        quests: mission.Quests,
+      });
     })
-      .then(result => {
-        const mission = result;
-        const {
-          name,
-          due,
-          status,
-          createdAt,
-          owners,
-          description,
-          id
-        } = mission;
-        // ADD QUESTS TO DISPLAY BY ID
-        res.render("view", {
-          name,
-          status,
-          due,
-          createdAt,
-          owners,
-          description,
-          id,
-          quests: mission.Quests,
-        });
-      })
       .catch(err => console.log(err));
   });
 
   // New Mission
   app.post("/missions/add", (req, res) => {
-    console.log("add");
     const { name, due, status, owners, description } = req.body;
     const quests = req.body.quests.split(",");
 
@@ -130,44 +135,42 @@ module.exports = function (app) {
 
   // COMPLETE QUEST
   app.get("/quest/update/:id", async (req, res) => {
-    db.Quest.findOne({
+    const questData = await db.Quest.findOne({
       where: {
         id: req.params.id
       },
       include: [db.Mission]
-    }).then(result => {
-      const quest = JSON.parse(JSON.stringify(result));
-      if(!quest) { return false; }
-  
-      db.Quest.destroy({
-        where: {
-          id: req.params.id
-        }
-      }).then(() => {
-        console.log("MISSION:", quest.Mission);
-        const username = quest.Mission.owners;
-        const id = result.id;
-        db.People.findOne({
-          where: {
-            username: username
-          }
-        }).then(result => {
-          const user = JSON.parse(JSON.stringify(result));
-          console.log("USER:", user);
-          score = user.score;
-          score = score + 1;
-          console.log(username + "'s " + "score is: " + score);
-          db.People.update(
-            { score: score },
-            {
-              where: {
-                username: username
-              }
-            }
-          ).then(res.redirect("/missions/" + id));
-        });
-      });
     });
+
+    const quest = await JSON.parse(JSON.stringify(questData));
+
+    await db.Quest.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    const username = quest.Mission.owners;
+    const id = quest.Mission.id;
+
+    const peopleData = await db.People.findOne({
+      where: {
+        username: username
+      }
+    });
+    const user = JSON.parse(JSON.stringify(peopleData));
+    console.log("USER:", user);
+    score = user.score;
+    score = score + 1;
+    console.log(username + "'s " + "score is: " + score);
+    await db.People.update(
+      { score: score },
+      {
+        where: {
+          username: username
+        }
+      });
+    res.redirect("/missions/" + id);
   });
 
   //EDIT

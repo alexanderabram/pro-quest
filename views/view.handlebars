@@ -1,4 +1,4 @@
-{{title}}
+<h1>{{title}}</h1>
 <div class="card mb-4">
 
   <div class="card-header">
@@ -15,7 +15,7 @@
         <h3> Quests: </h3>
         
         {{#each quests}}
-        <a href="/quest/update/{{dataValues.id}}"><button class="quest">{{{dataValues.name}}}</button></a>
+        <a href="/quest/update/{{id}}"><button class="quest">{{{name}}}</button></a>
         {{/each}}
        
         <h3>Due: {{due}}</h3>
