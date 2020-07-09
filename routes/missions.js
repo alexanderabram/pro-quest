@@ -130,30 +130,31 @@ module.exports = function (app) {
 
   // COMPLETE QUEST
   app.get("/quest/update/:id", async (req, res) => {
-    db.Quest.findAll({
+    db.Quest.findOne({
       where: {
         id: req.params.id
-      }
-    }).then(results => {
-      const MissionId = results[0].dataValues.MissionId;
+      },
+      include: [db.Mission]
+    }).then(result => {
+      const quest = JSON.parse(JSON.stringify(result));
+      if(!quest) { return false; }
+  
       db.Quest.destroy({
         where: {
           id: req.params.id
         }
-      }),
-      db.Mission.findAll({
-        where: {
-          id: MissionId
-        }
-      }).then(results => {
-        const username = results[0].dataValues.owners;
-        const id = results[0].dataValues.id;
-        db.People.findAll({
+      }).then(() => {
+        console.log("MISSION:", quest.Mission);
+        const username = quest.Mission.owners;
+        const id = result.id;
+        db.People.findOne({
           where: {
             username: username
           }
-        }).then(user => {
-          score = user[0].dataValues.score;
+        }).then(result => {
+          const user = JSON.parse(JSON.stringify(result));
+          console.log("USER:", user);
+          score = user.score;
           score = score + 1;
           console.log(username + "'s " + "score is: " + score);
           db.People.update(
@@ -171,14 +172,13 @@ module.exports = function (app) {
 
   //EDIT
   app.get("/missions/edit/:id", (req, res) => {
-    db.Mission.findAll({
+    db.Mission.findOne({
       where: {
         id: req.params.id
       }
     })
-      .then(results => {
-        mission = results[0].dataValues;
-
+      .then(result => {
+        const mission = JSON.parse(JSON.stringify(result));
         const { name, due, status, createdAt, owners, description } = mission;
 
         res.render("edit_mission", {
